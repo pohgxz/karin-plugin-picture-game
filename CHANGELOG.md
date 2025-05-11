@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.4](https://github.com/pohgxz/karin-plugin-picture-game/compare/v1.0.3...v1.0.4) (2025-05-11)
+
+
+### Bug Fixes
+
+* types ([40cb26a](https://github.com/pohgxz/karin-plugin-picture-game/commit/40cb26a6def005d1fd7c4db7b0d5536c067f70e7))
+
 ## [1.0.3](https://github.com/pohgxz/karin-plugin-picture-game/compare/v1.0.2...v1.0.3) (2025-05-11)
 
 
