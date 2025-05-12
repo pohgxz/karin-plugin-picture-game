@@ -1,4 +1,4 @@
-import { AdapterType, karin, segment } from 'node-karin'
+import { AdapterType, karin, Plugin, segment } from 'node-karin'
 import Game from './chinese_chess/game'
 import Canvas from './chinese_chess/canvas'
 
