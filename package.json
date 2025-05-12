@@ -15,7 +15,7 @@
   "scripts": {
     "build": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json",
     "pub": "npm publish --access public",
-    "dev": "tsx src/index.ts",
+    "dev": "tsx src/app.ts",
     "watch": "tsx watch --include \"src/**/*.ts\" src/index.ts",
     "karin": "karin"
   },
@@ -28,7 +28,7 @@
     "@types/ws": "^8.5.11",
     "eslint": "^9.7.0",
     "neostandard": "^0.11.1",
-    "node-karin": "1.3.14",
+    "node-karin": "1.9.1",
     "tsc-alias": "^1.8.10",
     "tsx": "^4.19.2",
     "typescript": "^5.5.3"
