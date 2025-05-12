@@ -273,7 +273,6 @@ function countDown (group: string, bot: AdapterType) {
         games.delete(group)
         return
       }
-
       countDown(group, bot)
     }
   }, 1000)
