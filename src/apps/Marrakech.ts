@@ -11,6 +11,7 @@ export class Marrakech extends Plugin {
       event: 'message.group',
       rule: [
         { reg: /^(马拉喀什|地毯商人)$/, fnc: 'menu' },
+        { reg: /^(马拉喀什|地毯商人)游戏规则$/, fnc: 'rulebook' },
         { reg: /^加入(马拉喀什|地毯商人)$/, fnc: 'join' },
         { reg: /^退出(马拉喀什|地毯商人)$/, fnc: 'leave' },
         { reg: /^(上|下|左|右)$/, fnc: 'direction' },
@@ -60,16 +61,35 @@ export class Marrakech extends Plugin {
     const count = game.getPlayerNum();
     if (count === 4) {
       game.startGame();
-
+      const player = game.getPlayerInfo();
+      const msg = [
+        segment.text('加入成功，当前人数：4 人，游戏开始\n\n每人'),
+        segment.at(player),
+        segment.text(' 你是第一个操作玩家，请选择方向'),
+      ]
       return true;
     }
     if (count === 1) this.countDown(e.groupId, e.bot);
-    await this.reply('加入成功', { reply: true });
+    await this.reply(`加入成功，当前人数：${count} ，还需 ${4 - count} 人`, { reply: true });
     return true;
+  }
+
+  async rulebook() {
+    const msg = `
+    游戏规则：
+    1. 游戏开始后，每位玩家初始30金币
+    2. 地毯数量如下：
+    * 两位游玩：两种颜色地毯各 12 张，共 24 张，顺序打乱，只能拿取第一张
+    * 三位游玩：单色地毯 15 张，共 15 张
+    * 四位游玩：单色地毯 12 张，共 12 张
+    3. 游戏开始后，选择一个方向（不能回头)，然后按照要求放置地毯
+    4. 放置地毯时需要有一边贴着商人，否则无法放置`;
+    await this.reply(msg, { reply: true });
   }
 
   async menu() {
     const msg = `欢迎来到地毯商人,指令如下：
+    (马拉喀什|地毯商人)游戏规则
     加入(马拉喀什|地毯商人)
     退出(马拉喀什|地毯商人)`;
     await this.reply(msg, { reply: true });
