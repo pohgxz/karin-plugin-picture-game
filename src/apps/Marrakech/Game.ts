@@ -18,6 +18,7 @@ export default class Game {
   * * 四位游玩：拿取单色地毯 12 张，共 12 张
   */
 
+
   public getLastTime(): number {
     return this.time;
   }
@@ -41,7 +42,9 @@ export default class Game {
   public startGame() {
     this.start = true;
     this.time = Date.now();
-    this.player = randomInt(0, this.players.length);
+    const len = this.players.length;
+    this.player = randomInt(0, len);
+    
   }
   public getGameStatus(): boolean {
     return this.start;

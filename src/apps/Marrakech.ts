@@ -11,9 +11,10 @@ export class Marrakech extends Plugin {
       event: 'message.group',
       rule: [
         { reg: /^(马拉喀什|地毯商人)$/, fnc: 'menu' },
-        { reg: /^(马拉喀什|地毯商人)游戏规则$/, fnc: 'rulebook' },
+        { reg: /^(马拉喀什|地毯商人)游戏规则$/, fnc: 'guide' },
         { reg: /^加入(马拉喀什|地毯商人)$/, fnc: 'join' },
         { reg: /^退出(马拉喀什|地毯商人)$/, fnc: 'leave' },
+        { reg: /^开始(马拉喀什|地毯商人)$/, fnc: 'start'},
         { reg: /^(上|下|左|右)$/, fnc: 'direction' },
         { reg: /^((上左|上右|下左|下右|左上|左下|右上|右下|上上|右右|下下|左左))$/, fnc: 'lay' },
       ],
@@ -25,6 +26,28 @@ export class Marrakech extends Plugin {
   async lay() {}
 
   async direction() {}
+
+  async start(e: GroupMessage) {
+    const game = games.get(e.groupId);
+    if (game === undefined) {
+      return false;
+    }
+    if (game.getGameStatus()) {
+      await this.reply('游戏已经开始了哦', { reply: true });
+      return true;
+    }
+    if (!game.checkPlayer(e.userId)) {
+      return false;
+    }
+    const count = game.getPlayerNum();
+    if (count < 2 || count > 4) {
+      await this.reply('当前人数不足，无法开始游戏', { reply: true });
+      return true;
+    }
+    game.startGame();
+    const player = game.getPlayerInfo();
+
+  }
 
   async leave(e: GroupMessage) {
     let game = games.get(e.groupId);
@@ -39,7 +62,10 @@ export class Marrakech extends Plugin {
       return true;
     }
     game.removePlayer(e.userId);
-    await this.reply('你已退出当前游戏', { reply: true });
+    this.reply('你已退出当前游戏', { reply: true });
+    if (game.getPlayerNum() === 0) {
+      games.delete(e.groupId);
+    }
     return true;
   }
 
@@ -63,32 +89,35 @@ export class Marrakech extends Plugin {
       game.startGame();
       const player = game.getPlayerInfo();
       const msg = [
-        segment.text('加入成功，当前人数：4 人，游戏开始\n\n每人'),
+        segment.text('加入成功，当前人数：4 人，游戏开始\n\n'),
         segment.at(player),
         segment.text(' 你是第一个操作玩家，请选择方向'),
       ]
       return true;
     }
     if (count === 1) this.countDown(e.groupId, e.bot);
-    await this.reply(`加入成功，当前人数：${count} ，还需 ${4 - count} 人`, { reply: true });
+    await this.reply(`加入成功，当前人数：${count}`, { reply: true });
     return true;
   }
 
-  async rulebook() {
+  async guide() {
     const msg = `
     游戏规则：
     1. 游戏开始后，每位玩家初始30金币
     2. 地毯数量如下：
-    * 两位游玩：两种颜色地毯各 12 张，共 24 张，顺序打乱，只能拿取第一张
-    * 三位游玩：单色地毯 15 张，共 15 张
-    * 四位游玩：单色地毯 12 张，共 12 张
+    * 两位游玩：每人两种颜色地毯各 12 张，共 24 张，顺序打乱，只能拿取第一张
+    * 三位游玩：每人单色地毯 15 张，共 15 张
+    * 四位游玩：每人单色地毯 12 张，共 12 张
     3. 游戏开始后，选择一个方向（不能回头)，然后按照要求放置地毯
-    4. 放置地毯时需要有一边贴着商人，否则无法放置`;
+    4. 地毯规则如下：
+    * 地毯由两个 1*1 的方格组成的 2*1 的长方形
+    * 放置地毯时，不可超出棋盘，必须有一条边贴着人物
+    * 放置地毯时，不可完全覆盖另一块地毯`;
     await this.reply(msg, { reply: true });
   }
 
   async menu() {
-    const msg = `欢迎来到地毯商人,指令如下：
+    const msg = `欢迎来到马拉喀什,指令如下：
     (马拉喀什|地毯商人)游戏规则
     加入(马拉喀什|地毯商人)
     退出(马拉喀什|地毯商人)`;
