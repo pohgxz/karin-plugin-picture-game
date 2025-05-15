@@ -1,5 +1,5 @@
 import karin, { AdapterType, GroupMessage, Plugin, segment } from 'node-karin';
-import Game from './Marrakech/Game';
+import Game from './marrakech/Game';
 
 const games = new Map<string, Game>();
 
